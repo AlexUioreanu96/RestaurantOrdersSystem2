@@ -2,6 +2,7 @@ package com.example.RestaurantOrdersSystem2.api;
 
 import com.example.RestaurantOrdersSystem2.model.User;
 import com.example.RestaurantOrdersSystem2.model.UserRepository;
+import com.example.RestaurantOrdersSystem2.service.OrdersService;
 import com.example.RestaurantOrdersSystem2.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -20,6 +21,8 @@ public class UserController {
     @Autowired
     private UserService userService;
     @Autowired
+    private OrdersService ordersService;
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @PostMapping("/signup")
@@ -29,6 +32,7 @@ public class UserController {
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userService.save(user);
+        ordersService.prepopulateOrdersForCurrentUser(user);
         return ResponseEntity.ok("User registered successfully");
     }
 

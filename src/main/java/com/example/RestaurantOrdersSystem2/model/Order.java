@@ -1,7 +1,6 @@
 package com.example.RestaurantOrdersSystem2.model;
 
 import lombok.*;
-import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -13,6 +12,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Builder
 @ToString
+@EqualsAndHashCode
 @Table(name = "orders")
 public class Order {
     @Id
@@ -20,21 +20,9 @@ public class Order {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    private int price;
     private String description;
     @ManyToOne
-    private User user;
+    @JoinColumn(name = "user1_id")
+    private User user1;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Order order = (Order) o;
-        return getId() != null && Objects.equals(getId(), order.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 }

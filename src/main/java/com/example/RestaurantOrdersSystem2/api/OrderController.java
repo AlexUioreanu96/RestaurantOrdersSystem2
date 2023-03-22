@@ -34,7 +34,7 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<?> createOrder(@RequestBody Order order, Principal principal) {
         User user = userService.findByUsername(principal.getName());
-        order.setUser(user);
+        order.setUser1(user);
         ordersService.save(order);
         return ResponseEntity.ok("Order created successfully");
     }
@@ -59,7 +59,6 @@ public class OrderController {
         Optional<Order> orderOptional = user.getOrders().stream().filter(order -> order.getId().equals(orderId)).findFirst();
         if (orderOptional.isPresent()) {
             Order order = orderOptional.get();
-            order.setPrice(updatedOrder.getPrice());
             order.setDescription(updatedOrder.getDescription());
             Order savedOrder = ordersService.save(order);
             return ResponseEntity.ok(savedOrder);

@@ -2,10 +2,9 @@ package com.example.RestaurantOrdersSystem2.service;
 
 import com.example.RestaurantOrdersSystem2.model.Order;
 import com.example.RestaurantOrdersSystem2.model.OrderRepository;
+import com.example.RestaurantOrdersSystem2.model.User;
 import com.example.RestaurantOrdersSystem2.model.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,30 +18,27 @@ public class OrdersService {
     @Autowired
     private UserRepository userRepository;
 
-    public void prepopulateOrdersForCurrentUser() {
-        // Get the current user's ID
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Long currentUserId = userRepository.findByUsername(authentication.getName()).getId();
+    public void prepopulateOrdersForCurrentUser(User user) {
+        if (userRepository.findById(user.getId()).isPresent()) {
+            User user1 = userRepository.findById(user.getId()).get();
 
-        // Create some sample orders for the current user
-        List<Order> orders = new ArrayList<>();
-        Order order1 = new Order();
-        order1.setUser(userRepository.findById(currentUserId).get());
-        order1.setOrderDate(new Date());
-        order1.setTotalPrice(100.0);
-        orders.add(order1);
+            // Create some sample orders for the current user
+            List<Order> orders = new ArrayList<>();
+            Order order1 = Order.builder().user1(user1).description("French fries with eqqs cost:10$").build();
+            Order order2 = Order.builder().user1(user1).description("Spaghetti with meat cost:20$").build();
+            Order order3 = Order.builder().user1(user1).description("Argentinean Beef with fries cost:100$").build();
 
-        Order order2 = new Order();
-        order2.setUser(userRepository.findById(currentUserId).get());
-        order2.setOrderDate(new Date());
-        order2.setTotalPrice(200.0);
-        orders.add(order2);
+            orders.add(order1);
+            orders.add(order2);
+            orders.add(order3);
+            user.setOrders(orders);
 
-        orderRepository.saveAll(orders);
+            userRepository.save(user);
+        }
     }
 
     public List<Order> findByUserId(Long id) {
-        return orderRepository.findByUserId(id);
+        return orderRepository.findByUser1Id(id);
     }
 
     public Order save(Order order) {
