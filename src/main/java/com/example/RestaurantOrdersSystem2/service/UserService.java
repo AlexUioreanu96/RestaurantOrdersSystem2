@@ -15,11 +15,10 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    @PostConstruct
-    private void createDefaultUser() {
+    public void createDefaultUser() {
         if (getAllUsers().isEmpty()) {
-
             User user = User.builder().id(1L).email("alexandru.uioreanu@gmail.com").password("test").username("Alex").build();
+
             List<Order> orders = new ArrayList<>();
             Order order1 = Order.builder().user1(user).description("French fries with eqqs cost:10$").build();
             Order order2 = Order.builder().user1(user).description("Spaghetti with meat cost:20$").build();
